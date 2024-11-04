@@ -10,14 +10,15 @@ const SearchBar: React.FC<SearchBarProps> = ({ setQuery }) => {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const form = event.currentTarget;
-    const query = form.query.value;
-    setQuery(query);
-    form.reset();
+    const query = form.query.value.trim();
 
-    if (query === "") {
+    if (!query) {
       toast.error("Type something!");
       return;
     }
+
+    setQuery(query);
+    form.reset();
   };
 
   return (
