@@ -15,7 +15,7 @@ const ImageCard: React.FC<ImageCardProps> = ({ photo, openModal }) => {
         src={photo.urls.small}
         alt={photo.alt_description ?? "Image"}
         width="220"
-        height="180"
+        height="179"
         onClick={() => openModal(photo)}
       />
     </div>
