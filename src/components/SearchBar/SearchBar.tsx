@@ -1,10 +1,15 @@
+import React from "react";
 import toast, { Toaster } from "react-hot-toast";
 import s from "./Header.module.css";
 
-const SearchBar = ({ setQuery }) => {
-  const handleSubmit = (event) => {
+interface SearchBarProps {
+  setQuery: (query: string) => void;
+}
+
+const SearchBar: React.FC<SearchBarProps> = ({ setQuery }) => {
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const form = event.target;
+    const form = event.currentTarget;
     const query = form.query.value;
     setQuery(query);
     form.reset();

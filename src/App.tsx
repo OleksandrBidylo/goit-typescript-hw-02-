@@ -1,25 +1,30 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./App.css";
-import "../src/App.css";
 import { fetchPhotos } from "./services/Api";
 import ImageGallery from "./components/ImageGallery/ImageGallery";
 import Loader from "./components/Loader/Loader";
 import SearchBar from "./components/SearchBar/SearchBar";
-import ErorrMessage from "./components/ErrorMessage/ErorrMessage";
 import LoadMoreBtn from "./components/LoadMoreBtn/LoadMoreBtn";
 import ImageModal from "./components/ImageModal/ImageModal";
+import ErrorMessage from "./components/ErrorMessage/ErorrMessage";
 
-function App() {
-  const [photos, setPhotos] = useState([]);
+interface Photo {
+  id: string;
+  urls: { small: string; regular: string };
+  alt_description: string | null;
+}
+
+const App: React.FC = () => {
+  const [photos, setPhotos] = useState<Photo[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(1);
   const [totalResults, setTotalResults] = useState(0);
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [selectedPhoto, setSelectedPhoto] = useState(null);
+  const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
 
-  const openModal = (photo) => {
+  const openModal = (photo: Photo) => {
     setSelectedPhoto(photo);
     setModalIsOpen(true);
   };
@@ -48,7 +53,7 @@ function App() {
     }
   }, [page, query]);
 
-  const handleSetQuery = (newQuery) => {
+  const handleSetQuery = (newQuery: string) => {
     setQuery(newQuery);
     setPhotos([]);
     setPage(1);
@@ -59,17 +64,14 @@ function App() {
   };
 
   return (
-    <div>
+    <div className="App">
       <SearchBar setQuery={handleSetQuery} />
-
-      {!!photos.length && (
-        <ImageGallery photos={photos} openModal={openModal} />
-      )}
-      {!!photos.length && photos.length < totalResults && (
+      {isLoading && <Loader />}
+      {isError && <ErrorMessage />}
+      <ImageGallery photos={photos} openModal={openModal} />
+      {photos.length < totalResults && !isLoading && (
         <LoadMoreBtn handleChangePage={handleChangePage} />
       )}
-      {isLoading && <Loader />}
-      {isError && <ErorrMessage />}
       {selectedPhoto && (
         <ImageModal
           isOpen={modalIsOpen}
@@ -79,6 +81,6 @@ function App() {
       )}
     </div>
   );
-}
+};
 
 export default App;
